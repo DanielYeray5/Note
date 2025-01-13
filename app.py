@@ -67,36 +67,9 @@ def plot_decision_boundary(clf, X, y, plot_training=True, resolution=1000):
 def index():
     return render_template('index.html', f1_score=f1, recall=recall)
 
-@app.route('/plot')
-def plot():
-    plt.figure(figsize=(12, 6))
-    plot_decision_boundary(clf_tree_reduced, X_train.values, y_train)
-    img = io.BytesIO()
-    plt.savefig(img, format='png')
-    img.seek(0)
-    plt.close()  # Cierra la figura para evitar advertencias
-    return send_file(img, mimetype='image/png')
-
-@app.route('/tree')
-def tree():
-    dot_file_path = "static/socioeconomic_tree.dot"
-    png_file_path = "static/socioeconomic_tree.png"
-    
-    export_graphviz(
-        clf_tree_reduced,
-        out_file=dot_file_path,
-        feature_names=X_train.columns,
-        class_names=["low", "medium", "high"],
-        rounded=True,
-        filled=True
-    )
-    
-    with open(dot_file_path) as f:
-        dot_graph = f.read()
-    source = Source(dot_graph)
-    source.render(png_file_path, format="png")
-    
-    return send_file(f"{png_file_path}.png", mimetype='image/png')
+@app.route('/data')
+def data():
+    return render_template('data.html', tables=[df.to_html(classes='data')], titles=df.columns.values)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
