@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Boundary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em;
+            text-align: center;
+            width: 100%;
+        }
+        main {
+            padding: 2em;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 1em 0;
+        }
+        .score {
+            font-size: 2em; /* Tamaño de fuente más grande */
+            color: #333;
+            margin-top: 1em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Decision Boundary</h1>
+    </header>
+    <main>
+        <h2>Visualización del Límite de Decisión</h2>
+        <img src="static/decision_boundary.png" alt="Decision Boundary">
+        <p class="score">F1 Score: {{ f1_score }}</p>
+        <p class="score">Recall: {{ recall }}</p>
+        <h2>Representación del Árbol de Decisión</h2>
+        <img src="static/android_malware.png" alt="Imagen del Árbol de Decisión">
+    </main>
+</body>
+</html>
