@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, make_response
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import ListedColormap
@@ -8,6 +8,8 @@ from graphviz import Source
 import matplotlib
 matplotlib.use('Agg')
 from sklearn.metrics import f1_score, recall_score
+import io
+import os
 
 app = Flask(__name__)
 
@@ -69,25 +71,32 @@ def index():
 def plot():
     plt.figure(figsize=(12, 6))
     plot_decision_boundary(clf_tree_reduced, X_train.values, y_train)
-    plt.savefig('static/decision_boundary.png')
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
     plt.close()  # Cierra la figura para evitar advertencias
-    return send_file('static/decision_boundary.png', mimetype='image/png')
+    return send_file(img, mimetype='image/png')
 
 @app.route('/tree')
 def tree():
+    dot_file_path = "static/socioeconomic_tree.dot"
+    png_file_path = "static/socioeconomic_tree.png"
+    
     export_graphviz(
         clf_tree_reduced,
-        out_file="static/socioeconomic_tree.dot",
+        out_file=dot_file_path,
         feature_names=X_train.columns,
         class_names=["low", "medium", "high"],
         rounded=True,
         filled=True
     )
-    with open("static/socioeconomic_tree.dot") as f:
+    
+    with open(dot_file_path) as f:
         dot_graph = f.read()
     source = Source(dot_graph)
-    source.render("static/socioeconomic_tree", format="png")
-    return send_file('static/socioeconomic_tree.png', mimetype='image/png')
+    source.render(png_file_path, format="png")
+    
+    return send_file(f"{png_file_path}.png", mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
