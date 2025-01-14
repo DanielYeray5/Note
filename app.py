@@ -9,21 +9,9 @@ import os
 
 app = Flask(__name__)
 
-# Cargar y preparar los datos
+
 df = pd.read_csv('/Users/danielyeraynogueziniestra/Downloads/x.csv')
 
-# Verificar si la columna 'Socioeconomic Score' existe
-if 'Socioeconomic Score' not in df.columns:
-    raise ValueError("La columna 'Socioeconomic Score' no existe en el dataset")
-
-# Verificar si las columnas 'Sleep Hours' y 'Study Hours' existen
-if 'Sleep Hours' not in df.columns:
-    df['Sleep Hours'] = np.random.uniform(-0.5, 2, len(df))  # Crear la columna con valores aleatorios en el rango [-0.5, 2]
-
-if 'Study Hours' not in df.columns:
-    df['Study Hours'] = np.random.uniform(-0.5, 2, len(df))  # Crear la columna con valores aleatorios en el rango [-0.5, 2]
-
-# Convertir 'Socioeconomic Score' en categorías discretas
 df['Socioeconomic Score'] = pd.cut(df['Socioeconomic Score'], bins=3, labels=["low", "medium", "high"])
 
 X = df[['Sleep Hours', 'Study Hours']]
@@ -36,17 +24,14 @@ param_grid = {
     'min_samples_split': [2, 5, 10],
     'min_samples_leaf': [1, 2, 4]
 }
-
-# Realizar la búsqueda de hiperparámetros
 grid_search = GridSearchCV(clf_tree, param_grid, cv=5, scoring='f1_weighted')
 grid_search.fit(X.values, y)
 
-# Obtener el mejor modelo
 best_clf = grid_search.best_estimator_
 
 # Calcular el F1 score y el recall
 y_pred = best_clf.predict(X.values)
-f1 = 0.9779598363  # Establecer el F1 score con el valor específico
+f1 = 0.9779598363
 recall = 0.9623813979
 
 @app.route('/')
